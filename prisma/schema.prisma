@@ -8,26 +8,36 @@ datasource db {
 }
 
 model Question {
-  id   Int    @id @default(autoincrement())
-  text String
+  id      Int      @id @default(autoincrement())
+  text    String
+  answers Answer[]
 }
 
 model Answer {
-  id       Int    @id @default(autoincrement())
-  userId   Int
-  careerId Int
-  content  String
-  user     User   @relation(fields: [userId], references: [id])
-  career   Career @relation(fields: [careerId], references: [id])
+  id          Int           @id @default(autoincrement())
+  careerId    Int
+  questionId  Int
+  content     String
+  career      Career        @relation(fields: [careerId], references: [id])
+  question    Question      @relation(fields: [questionId], references: [id])
+  userAnswers UserAnswers[]
 }
 
 model User {
-  id       Int          @id @default(autoincrement())
+  id       Int           @id @default(autoincrement())
   name     String
-  email    String       @unique
+  email    String        @unique
   password String
-  answers  Answer[]
+  answers  UserAnswers[]
   careers  UserCareer[]
+}
+
+model UserAnswers {
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  answerId Int
+  user     User   @relation(fields: [userId], references: [id])
+  answer   Answer @relation(fields: [answerId], references: [id])
 }
 
 model UserCareer {
@@ -45,5 +55,5 @@ model Career {
   name        String
   description String?
   users       UserCareer[]
-  Answer      Answer[]
+  answers     Answer[]
 }
